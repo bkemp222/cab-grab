@@ -12,6 +12,7 @@ canvas.height = GAME_HEIGHT;
 
 let assetsLoaded = 0;
 let totalAssets = 0;
+let loadingMinimumTime = 0;
 
 const loadingPhrases = [
   "Parking the Trailer...",
@@ -234,13 +235,18 @@ const itemTable = [
 
 function updateLoading() {
   loadingPhraseTimer += deltaTime;
+  loadingMinimumTime += deltaTime;
 
-  if (loadingPhraseTimer > 10) {
+  if (loadingPhraseTimer > 15) {
     loadingPhraseTimer = 0;
     loadingPhraseIndex = (loadingPhraseIndex + 1) % loadingPhrases.length;
   }
 
-  if (assetsLoaded >= totalAssets && totalAssets > 0) {
+  if (
+    assetsLoaded >= totalAssets &&
+    totalAssets > 0 &&
+    loadingMinimumTime > 180
+  ) {
     screen = "title";
   }
 }
