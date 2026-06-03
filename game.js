@@ -287,8 +287,12 @@ function randomBetween(min, max) {
 }
 
 function playSound(sound) {
+
+  if (!musicEnabled) return;
+
   sound.currentTime = 0;
   sound.play().catch(() => { });
+
 }
 
 function stopSound(sound) {
