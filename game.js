@@ -118,7 +118,12 @@ const buttons = {
   pressStart: { x: 85, y: 450, width: 190, height: 45 },
   go: { x: 110, y: 550, width: 140, height: 45 },
   tryAgain: { x: 80, y: 485, width: 200, height: 45 },
-  music: { x: 300, y: 18, width: 42, height: 42 }
+  music: { x: 300, y: 18, width: 42, height: 42 },
+
+  left: { x: 10, y: 540, width: 90, height: 55 },
+jump: { x: 135, y: 540, width: 90, height: 55 },
+right: { x: 260, y: 540, width: 90, height: 55 }
+  
 };
 
 const itemTable = [
@@ -253,6 +258,32 @@ function updateDifficulty() {
   difficulty = 1 + Math.floor(score / 2000);
 
   itemSpawnDelay = Math.max(25, 90 - difficulty * 6);
+}
+
+function drawControlButton(label, button) {
+  ctx.fillStyle = "rgba(0, 0, 0, 0.45)";
+  ctx.fillRect(button.x, button.y, button.width, button.height);
+
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(button.x, button.y, button.width, button.height);
+
+  ctx.fillStyle = "white";
+  ctx.font = "bold 18px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText(
+    label,
+    button.x + button.width / 2,
+    button.y + 35
+  );
+
+  ctx.textAlign = "left";
+}
+
+function drawMobileControls() {
+  drawControlButton("LEFT", buttons.left);
+  drawControlButton("JUMP", buttons.jump);
+  drawControlButton("RIGHT", buttons.right);
 }
 
 function chooseItem() {
@@ -656,6 +687,7 @@ function drawGameplay() {
   drawPlayer();
   drawScorePopups();
   drawHud();
+  drawMobileControls();
 }
 
 function drawGameOver() {
@@ -763,15 +795,21 @@ screen = "countdown";
     return;
   }
 
-  if (screen === "game") {
-    if (x < GAME_WIDTH / 2) {
-      keys.left = true;
-      keys.right = false;
-    } else {
-      keys.right = true;
-      keys.left = false;
-    }
+if (screen === "game") {
+  if (isInsideButton(x, y, buttons.left)) {
+    keys.left = true;
+    keys.right = false;
   }
+
+  if (isInsideButton(x, y, buttons.right)) {
+    keys.right = true;
+    keys.left = false;
+  }
+
+  if (isInsideButton(x, y, buttons.jump)) {
+    keys.jump = true;
+  }
+}
 }
 
 canvas.addEventListener("mousedown", (e) => {
