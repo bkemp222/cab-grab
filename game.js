@@ -73,6 +73,7 @@ const sounds = {
 
 let screen = "title";
 let usingTouch = false;
+let touchJumpWasPressed = false;
 let countdownValue = 3;
 let countdownTimer = 0;
 let score = 0;
@@ -835,6 +836,8 @@ function updateTouchControls(e) {
   keys.left = false;
   keys.right = false;
 
+  let jumpCurrentlyPressed = false;
+
   for (let i = 0; i < e.touches.length; i++) {
     const touch = e.touches[i];
     const point = getCanvasPoint(touch.clientX, touch.clientY);
@@ -849,10 +852,16 @@ function updateTouchControls(e) {
       }
 
       if (isInsideButton(point.x, point.y, buttons.jump)) {
-        keys.jump = true;
+        jumpCurrentlyPressed = true;
       }
     }
   }
+
+  if (jumpCurrentlyPressed && !touchJumpWasPressed) {
+    keys.jump = true;
+  }
+
+  touchJumpWasPressed = jumpCurrentlyPressed;
 }
 
 canvas.addEventListener("touchstart", (e) => {
@@ -879,9 +888,14 @@ canvas.addEventListener("touchend", (e) => {
 
   if (screen === "game") {
     updateTouchControls(e);
+
+    if (e.touches.length === 0) {
+      touchJumpWasPressed = false;
+    }
   } else {
     keys.left = false;
     keys.right = false;
+    touchJumpWasPressed = false;
   }
 });
 
