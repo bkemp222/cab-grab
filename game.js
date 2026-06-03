@@ -72,6 +72,7 @@ const sounds = {
 };
 
 let screen = "title";
+let usingTouch = false;
 let countdownValue = 3;
 let countdownTimer = 0;
 let score = 0;
@@ -811,6 +812,8 @@ if (isInsideButton(x, y, buttons.jump)) {
 }
 
 canvas.addEventListener("mousedown", (e) => {
+  if (usingTouch) return;
+
   const point = getCanvasPoint(e.clientX, e.clientY);
 
   if (screen === "game") {
@@ -853,6 +856,7 @@ function updateTouchControls(e) {
 }
 
 canvas.addEventListener("touchstart", (e) => {
+  usingTouch = true;
   e.preventDefault();
 
   if (screen === "game") {
