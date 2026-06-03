@@ -79,7 +79,7 @@ const sounds = {
   hit: loadSound("sounds/hit.wav", false, 0.9),
   countdown: loadSound("sounds/countdown.mp3", false, 0.8),
 grab: loadSound("sounds/grab.mp3", false, 0.9),
-button: loadSound("sounds/button.mp3", false, 0.8),
+button: loadSound("sounds/button.wav", false, 0.8),
   
 };
 
