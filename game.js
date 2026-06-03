@@ -249,7 +249,7 @@ nextGroupieTime = randomBetween(250, 500);
 }
 
 function updateCountdown() {
-  countdownTimer--;
+  countdownTimer -= deltaTime;
 
   if (countdownTimer <= 0) {
     if (countdownValue === "GRAB!") {
