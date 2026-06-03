@@ -812,6 +812,14 @@ if (isInsideButton(x, y, buttons.jump)) {
 
 canvas.addEventListener("mousedown", (e) => {
   const point = getCanvasPoint(e.clientX, e.clientY);
+
+  if (screen === "game") {
+    if (isInsideButton(point.x, point.y, buttons.left)) keys.left = true;
+    if (isInsideButton(point.x, point.y, buttons.right)) keys.right = true;
+    if (isInsideButton(point.x, point.y, buttons.jump)) keys.jump = true;
+    return;
+  }
+
   handlePress(point.x, point.y);
 });
 
@@ -847,14 +855,14 @@ function updateTouchControls(e) {
 canvas.addEventListener("touchstart", (e) => {
   e.preventDefault();
 
-  if (screen !== "game") {
-    const touch = e.touches[0];
-    const point = getCanvasPoint(touch.clientX, touch.clientY);
-    handlePress(point.x, point.y);
+  if (screen === "game") {
+    updateTouchControls(e);
     return;
   }
 
-  updateTouchControls(e);
+  const touch = e.touches[0];
+  const point = getCanvasPoint(touch.clientX, touch.clientY);
+  handlePress(point.x, point.y);
 });
 
 canvas.addEventListener("touchmove", (e) => {
