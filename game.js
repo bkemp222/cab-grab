@@ -299,7 +299,7 @@ function drawControls() {
     ctx.drawImage(images.jumpButton, buttons.jump.x, buttons.jump.y, buttons.jump.width, buttons.jump.height);
     ctx.drawImage(images.rightButton, buttons.right.x, buttons.right.y, buttons.right.width, buttons.right.height);
   } else {
-    ctx.drawImage(images.keyboardControls, 80, 565, 200, 115);
+    ctx.drawImage(images.keyboardControls, 80, 500, 200, 115);
   }
 }
 
