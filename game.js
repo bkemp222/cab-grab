@@ -79,6 +79,7 @@ const sounds = {
   hit: loadSound("sounds/hit.wav", false, 0.9),
   countdown: loadSound("sounds/countdown.mp3", false, 0.8),
 grab: loadSound("sounds/grab.mp3", false, 0.9),
+button: loadSound("sounds/button.mp3", false, 0.8),
   
 };
 
@@ -804,32 +805,36 @@ function handlePress(x, y) {
 
     return;
   }
+if (screen === "title" && isInsideButton(x, y, buttons.pressStart)) {
+  playSound(sounds.button);
 
-  if (screen === "title" && isInsideButton(x, y, buttons.pressStart)) {
-    screen = "rules";
-    startIntroMusic();
-    return;
-  }
+  screen = "rules";
+  startIntroMusic();
+
+  return;
+}
 
 if (screen === "rules" && isInsideButton(x, y, buttons.go)) {
+
+  playSound(sounds.button);
+
   screen = "countdown";
 
   countdownValue = 3;
   countdownTimer = 60;
-
-  playSound(sounds.countdown);
 
   return;
 }
 
 if (screen === "gameover" && isInsideButton(x, y, buttons.tryAgain)) {
+
+  playSound(sounds.button);
+
   stopSound(sounds.gameoverMusic);
 
   countdownValue = 3;
   countdownTimer = 60;
   screen = "countdown";
-
-  playSound(sounds.countdown);
 
   return;
 }
