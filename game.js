@@ -76,7 +76,10 @@ const sounds = {
   gameplayMusic: loadSound("sounds/gameplay_music.mp3", true, 0.45),
   gameoverMusic: loadSound("sounds/gameover_music.mp3", true, 0.55),
   groupieAlert: loadSound("sounds/groupie_alert.wav", false, 0.9),
-  hit: loadSound("sounds/hit.wav", false, 0.9)
+  hit: loadSound("sounds/hit.wav", false, 0.9),
+  countdown: loadSound("sounds/countdown.mp3", false, 0.8),
+grab: loadSound("sounds/grab.mp3", false, 0.9),
+  
 };
 
 let screen = "title";
@@ -246,11 +249,9 @@ nextGroupieTime = randomBetween(250, 500);
 }
 
 function updateCountdown() {
-
   countdownTimer--;
 
   if (countdownTimer <= 0) {
-
     if (countdownValue === "GRAB!") {
       resetGameplay();
       return;
@@ -258,8 +259,10 @@ function updateCountdown() {
 
     if (countdownValue === 1) {
       countdownValue = "GRAB!";
+      playSound(sounds.grab);
     } else {
       countdownValue--;
+      playSound(sounds.countdown);
     }
 
     countdownTimer = 90;
@@ -552,20 +555,19 @@ function drawCountdown() {
 
     let text = countdownValue;
 if (countdownValue === "GRAB!") {
+  const shakeX = Math.sin(Date.now() / 20) * 5;
+  const shakeY = Math.cos(Date.now() / 18) * 4;
 
-    ctx.drawImage(
-        images.grab,
-        40,
-        220,
-        280,
-        120
-    );
-
+  ctx.drawImage(
+    images.grab,
+    40 + shakeX,
+    220 + shakeY,
+    280,
+    120
+  );
 } else {
-
-    ctx.strokeText(text, GAME_WIDTH / 2, GAME_HEIGHT / 2);
-    ctx.fillText(text, GAME_WIDTH / 2, GAME_HEIGHT / 2);
-
+  ctx.strokeText(text, GAME_WIDTH / 2, GAME_HEIGHT / 2);
+  ctx.fillText(text, GAME_WIDTH / 2, GAME_HEIGHT / 2);
 }
 }
 function getPlayerSprite() {
@@ -809,15 +811,16 @@ function handlePress(x, y) {
     return;
   }
 
-  if (screen === "rules" && isInsideButton(x, y, buttons.go)) {
+if (screen === "rules" && isInsideButton(x, y, buttons.go)) {
+  screen = "countdown";
 
-    screen = "countdown";
+  countdownValue = 3;
+  countdownTimer = 90;
 
-countdownValue = 3;
-countdownTimer = 90;
-screen = "countdown";
-    return;
-  }
+  playSound(sounds.countdown);
+
+  return;
+}
 
 if (screen === "gameover" && isInsideButton(x, y, buttons.tryAgain)) {
   stopSound(sounds.gameoverMusic);
@@ -825,6 +828,8 @@ if (screen === "gameover" && isInsideButton(x, y, buttons.tryAgain)) {
   countdownValue = 3;
   countdownTimer = 90;
   screen = "countdown";
+
+  playSound(sounds.countdown);
 
   return;
 }
