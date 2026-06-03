@@ -812,93 +812,67 @@ if (isInsideButton(x, y, buttons.jump)) {
 }
 }
 
-canvas.addEventListener("mousedown", (e) => {
-  if (usingTouch) return;
+const activePointers = new Map();
+
+function updatePointerControls() {
+  keys.left = false;
+  keys.right = false;
+
+  for (const point of activePointers.values()) {
+    if (isInsideButton(point.x, point.y, buttons.left)) {
+      keys.left = true;
+    }
+
+    if (isInsideButton(point.x, point.y, buttons.right)) {
+      keys.right = true;
+    }
+  }
+}
+
+canvas.addEventListener("pointerdown", (e) => {
+  e.preventDefault();
 
   const point = getCanvasPoint(e.clientX, e.clientY);
 
-  if (screen === "game") {
-    if (isInsideButton(point.x, point.y, buttons.left)) keys.left = true;
-    if (isInsideButton(point.x, point.y, buttons.right)) keys.right = true;
-    if (isInsideButton(point.x, point.y, buttons.jump)) keys.jump = true;
+  if (screen !== "game") {
+    handlePress(point.x, point.y);
     return;
   }
 
-  handlePress(point.x, point.y);
-});
+  activePointers.set(e.pointerId, point);
 
-canvas.addEventListener("mouseup", () => {
-  keys.left = false;
-  keys.right = false;
-});
-
-function updateTouchControls(e) {
-  keys.left = false;
-  keys.right = false;
-
-  let jumpCurrentlyPressed = false;
-
-  for (let i = 0; i < e.touches.length; i++) {
-    const touch = e.touches[i];
-    const point = getCanvasPoint(touch.clientX, touch.clientY);
-
-    if (screen === "game") {
-      if (isInsideButton(point.x, point.y, buttons.left)) {
-        keys.left = true;
-      }
-
-      if (isInsideButton(point.x, point.y, buttons.right)) {
-        keys.right = true;
-      }
-
-      if (isInsideButton(point.x, point.y, buttons.jump)) {
-        jumpCurrentlyPressed = true;
-      }
-    }
-  }
-
-  if (jumpCurrentlyPressed && !touchJumpWasPressed) {
+  if (isInsideButton(point.x, point.y, buttons.jump)) {
     keys.jump = true;
   }
 
-  touchJumpWasPressed = jumpCurrentlyPressed;
-}
-
-canvas.addEventListener("touchstart", (e) => {
-  usingTouch = true;
-  e.preventDefault();
-
-  if (screen === "game") {
-    updateTouchControls(e);
-    return;
-  }
-
-  const touch = e.touches[0];
-  const point = getCanvasPoint(touch.clientX, touch.clientY);
-  handlePress(point.x, point.y);
+  updatePointerControls();
 });
 
-canvas.addEventListener("touchmove", (e) => {
-  e.preventDefault();
-  updateTouchControls(e);
-});
-
-canvas.addEventListener("touchend", (e) => {
+canvas.addEventListener("pointermove", (e) => {
   e.preventDefault();
 
-  if (screen === "game") {
-    updateTouchControls(e);
+  if (screen !== "game") return;
 
-    if (e.touches.length === 0) {
-      touchJumpWasPressed = false;
-    }
-  } else {
-    keys.left = false;
-    keys.right = false;
-    touchJumpWasPressed = false;
+  if (activePointers.has(e.pointerId)) {
+    const point = getCanvasPoint(e.clientX, e.clientY);
+    activePointers.set(e.pointerId, point);
+    updatePointerControls();
   }
 });
 
+canvas.addEventListener("pointerup", (e) => {
+  e.preventDefault();
+
+  activePointers.delete(e.pointerId);
+  updatePointerControls();
+});
+
+canvas.addEventListener("pointercancel", (e) => {
+  e.preventDefault();
+
+  activePointers.delete(e.pointerId);
+  updatePointerControls();
+});
 // Keyboard controls
 window.addEventListener("keydown", (e) => {
   if (screen === "title" && e.key === "Enter") {
