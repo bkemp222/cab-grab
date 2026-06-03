@@ -810,10 +810,15 @@ screen = "countdown";
     return;
   }
 
-  if (screen === "gameover" && isInsideButton(x, y, buttons.tryAgain)) {
-    resetGameplay();
-    return;
-  }
+if (screen === "gameover" && isInsideButton(x, y, buttons.tryAgain)) {
+  stopSound(sounds.gameoverMusic);
+
+  countdownValue = 3;
+  countdownTimer = 90;
+  screen = "countdown";
+
+  return;
+}
 
 if (screen === "game") {
 if (isInsideButton(x, y, buttons.left)) {
@@ -852,10 +857,17 @@ canvas.addEventListener("pointerdown", (e) => {
 
   const point = getCanvasPoint(e.clientX, e.clientY);
 
-  if (screen !== "game") {
-    handlePress(point.x, point.y);
-    return;
-  }
+if (screen !== "game") {
+  handlePress(point.x, point.y);
+  return;
+}
+
+if (isInsideButton(point.x, point.y, buttons.music)) {
+  handlePress(point.x, point.y);
+  return;
+}
+
+activePointers.set(e.pointerId, point);
 
   activePointers.set(e.pointerId, point);
 
