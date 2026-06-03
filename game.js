@@ -227,7 +227,7 @@ function resetGameplay() {
 
   itemSpawnTimer = 0;
   groupieTimer = 0;
-  nextGroupieTime = randomBetween(260, 520);
+nextGroupieTime = randomBetween(700, 1200);
 
   screen = "game";
   stopSound(sounds.gameoverMusic);
@@ -255,11 +255,9 @@ function updateCountdown() {
     countdownTimer = 90;
   }
 }
-
 function updateDifficulty() {
-  difficulty = 1 + Math.floor(score / 2000);
-
-  itemSpawnDelay = Math.max(25, 90 - difficulty * 6);
+  difficulty = 1 + Math.floor(score / 3000);
+  itemSpawnDelay = Math.max(55, 140 - difficulty * 8);
 }
 
 function drawControlButton(label, button) {
