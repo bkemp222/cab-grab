@@ -227,7 +227,7 @@ function resetGameplay() {
 
   itemSpawnTimer = 0;
   groupieTimer = 0;
-nextGroupieTime = randomBetween(700, 1200);
+nextGroupieTime = randomBetween(250, 500);
 
   screen = "game";
   stopSound(sounds.gameoverMusic);
