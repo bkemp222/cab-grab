@@ -235,7 +235,7 @@ const itemTable = [
 function updateLoading() {
   loadingPhraseTimer += deltaTime;
 
-  if (loadingPhraseTimer > 30) {
+  if (loadingPhraseTimer > 10) {
     loadingPhraseTimer = 0;
     loadingPhraseIndex = (loadingPhraseIndex + 1) % loadingPhrases.length;
   }
