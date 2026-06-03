@@ -4,6 +4,9 @@ const ctx = canvas.getContext("2d");
 const GAME_WIDTH = 360;
 const GAME_HEIGHT = 640;
 
+const isTouchDevice =
+  "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
 canvas.width = GAME_WIDTH;
 canvas.height = GAME_HEIGHT;
 
@@ -47,6 +50,7 @@ const images = {
   leftButton: loadImage("buttons/left.png"),
 jumpButton: loadImage("buttons/jump.png"),
 rightButton: loadImage("buttons/right.png"),
+keyboardControls: loadImage("buttons/keyboard_controls.png"),
 
   hesherIdle: loadImage("sprite/hesher/hesher_idle.png"),
   hesherJump: loadImage("sprite/hesher/hesher_jump.png"),
@@ -285,31 +289,14 @@ function drawControlButton(label, button) {
   ctx.textAlign = "left";
 }
 
-function drawMobileControls() {
-
-  ctx.drawImage(
-    images.leftButton,
-    buttons.left.x,
-    buttons.left.y,
-    buttons.left.width,
-    buttons.left.height
-  );
-
-  ctx.drawImage(
-    images.jumpButton,
-    buttons.jump.x,
-    buttons.jump.y,
-    buttons.jump.width,
-    buttons.jump.height
-  );
-
-  ctx.drawImage(
-    images.rightButton,
-    buttons.right.x,
-    buttons.right.y,
-    buttons.right.width,
-    buttons.right.height
-  );
+function drawControls() {
+  if (isTouchDevice) {
+    ctx.drawImage(images.leftButton, buttons.left.x, buttons.left.y, buttons.left.width, buttons.left.height);
+    ctx.drawImage(images.jumpButton, buttons.jump.x, buttons.jump.y, buttons.jump.width, buttons.jump.height);
+    ctx.drawImage(images.rightButton, buttons.right.x, buttons.right.y, buttons.right.width, buttons.right.height);
+  } else {
+    ctx.drawImage(images.keyboardControls, 80, 565, 200, 45);
+  }
 }
 
 function chooseItem() {
@@ -713,7 +700,7 @@ function drawGameplay() {
   drawPlayer();
   drawScorePopups();
   drawHud();
-  drawMobileControls();
+  drawControls();
 }
 
 function drawGameOver() {
