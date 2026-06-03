@@ -51,6 +51,7 @@ const images = {
 jumpButton: loadImage("buttons/jump.png"),
 rightButton: loadImage("buttons/right.png"),
 keyboardControls: loadImage("buttons/keyboard_controls.png"),
+grab: loadImage("title/grab.png"),
 
   hesherIdle: loadImage("sprite/hesher/hesher_idle.png"),
   hesherJump: loadImage("sprite/hesher/hesher_jump.png"),
@@ -551,13 +552,21 @@ function drawCountdown() {
 
     let text = countdownValue;
 if (countdownValue === "GRAB!") {
-    ctx.font = "bold 72px Arial";
-    ctx.fillStyle = "#ff4f58";
-}
+
+    ctx.drawImage(
+        images.grab,
+        40,
+        220,
+        280,
+        120
+    );
+
+} else {
+
     ctx.strokeText(text, GAME_WIDTH / 2, GAME_HEIGHT / 2);
     ctx.fillText(text, GAME_WIDTH / 2, GAME_HEIGHT / 2);
 
-    ctx.textAlign = "left";
+}
 }
 function getPlayerSprite() {
   if (player.state === "jump") return images.hesherJump;
