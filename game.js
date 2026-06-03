@@ -36,6 +36,12 @@ function loadSound(src, loop = false, volume = 1) {
   return audio;
 }
 
+function stopAllMusic() {
+  stopSound(sounds.introMusic);
+  stopSound(sounds.gameplayMusic);
+  stopSound(sounds.gameoverMusic);
+}
+
 // Images
 const images = {
   diveBar: loadImage("background/dive_bar_bg.png"),
@@ -952,6 +958,16 @@ window.addEventListener("keydown", (e) => {
 window.addEventListener("keyup", (e) => {
   if (e.key === "ArrowLeft" || e.key === "a") keys.left = false;
   if (e.key === "ArrowRight" || e.key === "d") keys.right = false;
+});
+
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    stopAllMusic();
+  }
+});
+
+window.addEventListener("pagehide", () => {
+  stopAllMusic();
 });
 
 gameLoop();
