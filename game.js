@@ -72,6 +72,8 @@ const sounds = {
 };
 
 let screen = "title";
+let deltaTime = 1;
+let lastTime = 0;
 let usingTouch = false;
 let touchJumpWasPressed = false;
 let countdownValue = 3;
@@ -369,13 +371,13 @@ function updatePlayer() {
   let moving = false;
 
   if (keys.left) {
-    player.x -= player.speed;
+    player.x -= player.speed * deltaTime;
     player.facing = -1;
     moving = true;
   }
 
   if (keys.right) {
-    player.x += player.speed;
+    player.x += player.speed * deltaTime;
     player.facing = 1;
     moving = true;
   }
@@ -387,8 +389,8 @@ function updatePlayer() {
 
   keys.jump = false;
 
-  player.velocityY += player.gravity;
-  player.y += player.velocityY;
+player.velocityY += player.gravity * deltaTime;
+player.y += player.velocityY * deltaTime;
 
   if (player.y >= groundY - player.height) {
     player.y = groundY - player.height;
@@ -407,7 +409,7 @@ function updatePlayer() {
   }
 
   if (player.state === "run") {
-    player.frameTimer++;
+    player.frameTimer += deltaTime;
 
     if (player.frameTimer > 7) {
       player.frame = (player.frame + 1) % 4;
@@ -420,7 +422,7 @@ function updatePlayer() {
 }
 
 function updateItems() {
-  itemSpawnTimer++;
+itemSpawnTimer += deltaTime;
 
   if (itemSpawnTimer >= itemSpawnDelay) {
     spawnItem();
@@ -429,7 +431,7 @@ function updateItems() {
 
   for (let i = items.length - 1; i >= 0; i--) {
     const item = items[i];
-    item.y += item.speed;
+    item.y += item.speed * deltaTime;
 
     if (rectsOverlap(item, player, 14, 14, 38, 32)) {
       if (item.good) {
@@ -458,7 +460,7 @@ function updateItems() {
 }
 
 function updateGroupies() {
-  groupieTimer++;
+  groupieTimer += deltaTime;
 
   if (groupieTimer >= nextGroupieTime) {
     spawnGroupie();
@@ -472,9 +474,9 @@ function updateGroupies() {
   for (let i = groupies.length - 1; i >= 0; i--) {
     const groupie = groupies[i];
 
-    groupie.x += groupie.speed;
+   groupie.x += groupie.speed * deltaTime;
 
-    groupie.frameTimer++;
+    groupie.frameTimer += deltaTime;
     if (groupie.frameTimer > 8) {
       groupie.frame = (groupie.frame + 1) % 2;
       groupie.frameTimer = 0;
@@ -495,8 +497,8 @@ function updateScorePopups() {
   for (let i = scorePopups.length - 1; i >= 0; i--) {
     const popup = scorePopups[i];
 
-    popup.y -= 1.2;
-    popup.life--;
+    popup.y -= 1.2 * deltaTime;
+popup.life -= deltaTime;
 
     if (popup.life <= 0) {
       scorePopups.splice(i, 1);
@@ -733,7 +735,14 @@ function draw() {
   if (screen === "gameover") drawGameOver();
 }
 
-function gameLoop() {
+function gameLoop(timestamp) {
+  if (!lastTime) lastTime = timestamp;
+
+  deltaTime = (timestamp - lastTime) / 16.67;
+  deltaTime = Math.min(deltaTime, 2);
+
+  lastTime = timestamp;
+
   updateGame();
   draw();
   requestAnimationFrame(gameLoop);
