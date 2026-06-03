@@ -820,35 +820,57 @@ canvas.addEventListener("mouseup", () => {
   keys.right = false;
 });
 
+function updateTouchControls(e) {
+  keys.left = false;
+  keys.right = false;
+
+  for (let i = 0; i < e.touches.length; i++) {
+    const touch = e.touches[i];
+    const point = getCanvasPoint(touch.clientX, touch.clientY);
+
+    if (screen === "game") {
+      if (isInsideButton(point.x, point.y, buttons.left)) {
+        keys.left = true;
+      }
+
+      if (isInsideButton(point.x, point.y, buttons.right)) {
+        keys.right = true;
+      }
+
+      if (isInsideButton(point.x, point.y, buttons.jump)) {
+        keys.jump = true;
+      }
+    }
+  }
+}
+
 canvas.addEventListener("touchstart", (e) => {
   e.preventDefault();
 
-  const touch = e.touches[0];
-  const point = getCanvasPoint(touch.clientX, touch.clientY);
+  if (screen !== "game") {
+    const touch = e.touches[0];
+    const point = getCanvasPoint(touch.clientX, touch.clientY);
+    handlePress(point.x, point.y);
+    return;
+  }
 
-  handlePress(point.x, point.y);
+  updateTouchControls(e);
 });
 
 canvas.addEventListener("touchmove", (e) => {
   e.preventDefault();
-
-  if (screen !== "game") return;
-
-  const touch = e.touches[0];
-  const point = getCanvasPoint(touch.clientX, touch.clientY);
-
-  if (point.x < GAME_WIDTH / 2) {
-    keys.left = true;
-    keys.right = false;
-  } else {
-    keys.right = true;
-    keys.left = false;
-  }
+  updateTouchControls(e);
 });
 
-canvas.addEventListener("touchend", () => {
+canvas.addEventListener("touchend", (e) => {
+  e.preventDefault();
+
+  if (screen === "game") {
+    updateTouchControls(e);
+  } else {
     keys.left = false;
     keys.right = false;
+  }
 });
 
 // Keyboard controls
