@@ -796,19 +796,17 @@ screen = "countdown";
   }
 
 if (screen === "game") {
-  if (isInsideButton(x, y, buttons.left)) {
+if (isInsideButton(x, y, buttons.left)) {
     keys.left = true;
-    keys.right = false;
-  }
+}
 
-  if (isInsideButton(x, y, buttons.right)) {
+if (isInsideButton(x, y, buttons.right)) {
     keys.right = true;
-    keys.left = false;
-  }
+}
 
-  if (isInsideButton(x, y, buttons.jump)) {
+if (isInsideButton(x, y, buttons.jump)) {
     keys.jump = true;
-  }
+}
 }
 }
 
@@ -849,8 +847,8 @@ canvas.addEventListener("touchmove", (e) => {
 });
 
 canvas.addEventListener("touchend", () => {
-  keys.left = false;
-  keys.right = false;
+    keys.left = false;
+    keys.right = false;
 });
 
 // Keyboard controls
