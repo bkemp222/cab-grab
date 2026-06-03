@@ -44,6 +44,9 @@ const images = {
   pressStart: loadImage("buttons/press_start.png"),
   go: loadImage("buttons/go.png"),
   tryAgain: loadImage("buttons/try_again.png"),
+  leftButton: loadImage("buttons/left.png"),
+jumpButton: loadImage("buttons/jump.png"),
+rightButton: loadImage("buttons/right.png"),
 
   hesherIdle: loadImage("sprite/hesher/hesher_idle.png"),
   hesherJump: loadImage("sprite/hesher/hesher_jump.png"),
@@ -283,9 +286,30 @@ function drawControlButton(label, button) {
 }
 
 function drawMobileControls() {
-  drawControlButton("LEFT", buttons.left);
-  drawControlButton("JUMP", buttons.jump);
-  drawControlButton("RIGHT", buttons.right);
+
+  ctx.drawImage(
+    images.leftButton,
+    buttons.left.x,
+    buttons.left.y,
+    buttons.left.width,
+    buttons.left.height
+  );
+
+  ctx.drawImage(
+    images.jumpButton,
+    buttons.jump.x,
+    buttons.jump.y,
+    buttons.jump.width,
+    buttons.jump.height
+  );
+
+  ctx.drawImage(
+    images.rightButton,
+    buttons.right.x,
+    buttons.right.y,
+    buttons.right.width,
+    buttons.right.height
+  );
 }
 
 function chooseItem() {
