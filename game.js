@@ -157,7 +157,7 @@ const itemTable = [
     good: true,
     points: 1000,
     width: 88,
-    height: 88,
+    height: 93,
     speed: 2,
     weight: 18
   },
