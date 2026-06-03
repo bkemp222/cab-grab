@@ -51,7 +51,7 @@ const images = {
 jumpButton: loadImage("buttons/jump.png"),
 rightButton: loadImage("buttons/right.png"),
 keyboardControls: loadImage("buttons/keyboard_controls.png"),
-grab: loadImage("title/grab.png"),
+grab: loadImage("buttons/grab.png"),
 
   hesherIdle: loadImage("sprite/hesher/hesher_idle.png"),
   hesherJump: loadImage("sprite/hesher/hesher_jump.png"),
