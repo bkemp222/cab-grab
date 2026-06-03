@@ -10,6 +10,21 @@ const isTouchDevice =
 canvas.width = GAME_WIDTH;
 canvas.height = GAME_HEIGHT;
 
+let assetsLoaded = 0;
+let totalAssets = 0;
+
+const loadingPhrases = [
+  "Parking the Trailer...",
+  "Writing the Setlist...",
+  "Untangling Cables...",
+  "Searching for Picks...",
+  "Asking for Drink Tickets...",
+  "Looking for Sound Guy..."
+];
+
+let loadingPhraseIndex = 0;
+let loadingPhraseTimer = 0;
+
 function fitCanvas() {
   const scale = Math.min(
     window.innerWidth / GAME_WIDTH,
@@ -24,18 +39,43 @@ window.addEventListener("resize", fitCanvas);
 fitCanvas();
 
 function loadImage(src) {
+  totalAssets++;
+
   const img = new Image();
+
+  img.onload = () => {
+    assetsLoaded++;
+  };
+
+  img.onerror = () => {
+    assetsLoaded++;
+    console.warn(`Image failed to load: ${src}`);
+  };
+
   img.src = src;
   return img;
 }
 
 function loadSound(src, loop = false, volume = 1) {
-  const audio = new Audio(src);
+  totalAssets++;
+
+  const audio = new Audio();
+
+  audio.addEventListener("canplaythrough", () => {
+    assetsLoaded++;
+  }, { once: true });
+
+  audio.addEventListener("error", () => {
+    assetsLoaded++;
+    console.warn(`Sound failed to load: ${src}`);
+  }, { once: true });
+
+  audio.src = src;
   audio.loop = loop;
   audio.volume = volume;
+
   return audio;
 }
-
 function stopAllMusic() {
   stopSound(sounds.introMusic);
   stopSound(sounds.gameplayMusic);
@@ -49,6 +89,7 @@ const images = {
   title: loadImage("title/title.png"),
   rules: loadImage("title/rules.png"),
   gameOver: loadImage("title/game_over.png"),
+  loading: loadImage("title/loading.png"),
 
   pressStart: loadImage("buttons/press_start.png"),
   go: loadImage("buttons/go.png"),
@@ -89,7 +130,7 @@ button: loadSound("sounds/button.wav", false, 0.8),
   
 };
 
-let screen = "title";
+let screen = "loading";
 let deltaTime = 1;
 let lastTime = 0;
 let usingTouch = false;
@@ -190,6 +231,56 @@ const itemTable = [
     weight: 24
   }
 ];
+
+function updateLoading() {
+  loadingPhraseTimer += deltaTime;
+
+  if (loadingPhraseTimer > 45) {
+    loadingPhraseTimer = 0;
+    loadingPhraseIndex = (loadingPhraseIndex + 1) % loadingPhrases.length;
+  }
+
+  if (assetsLoaded >= totalAssets && totalAssets > 0) {
+    screen = "title";
+  }
+}
+
+function drawLoading() {
+  ctx.drawImage(images.loading, 0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+  const progress = totalAssets > 0 ? assetsLoaded / totalAssets : 0;
+  const barX = 45;
+  const barY = 540;
+  const barW = 270;
+  const barH = 18;
+
+  ctx.fillStyle = "rgba(0, 0, 0, 0.65)";
+  ctx.fillRect(barX, barY, barW, barH);
+
+  ctx.fillStyle = "#ff4f58";
+  ctx.fillRect(barX, barY, barW * progress, barH);
+
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = 2;
+  ctx.strokeRect(barX, barY, barW, barH);
+
+  ctx.fillStyle = "white";
+  ctx.font = "bold 14px Arial";
+  ctx.textAlign = "center";
+  ctx.fillText(
+    loadingPhrases[loadingPhraseIndex],
+    GAME_WIDTH / 2,
+    525
+  );
+
+  ctx.fillText(
+    `${Math.floor(progress * 100)}%`,
+    GAME_WIDTH / 2,
+    580
+  );
+
+  ctx.textAlign = "left";
+}
 
 function randomBetween(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
@@ -530,6 +621,11 @@ popup.life -= deltaTime;
 
 function updateGame() {
 
+  if (screen === "loading") {
+  updateLoading();
+  return;
+}
+  
   if (screen === "countdown") {
     updateCountdown();
     return;
@@ -757,6 +853,10 @@ lines.forEach((line, index) => {
 function draw() {
   ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
 
+  if (screen === "loading") {
+  drawLoading();
+  return;
+}
   if (screen === "title") drawTitle();
   if (screen === "rules") drawRules();
   if (screen === "countdown") drawCountdown();
