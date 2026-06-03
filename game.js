@@ -815,7 +815,7 @@ if (screen === "rules" && isInsideButton(x, y, buttons.go)) {
   screen = "countdown";
 
   countdownValue = 3;
-  countdownTimer = 90;
+  countdownTimer = 60;
 
   playSound(sounds.countdown);
 
@@ -826,7 +826,7 @@ if (screen === "gameover" && isInsideButton(x, y, buttons.tryAgain)) {
   stopSound(sounds.gameoverMusic);
 
   countdownValue = 3;
-  countdownTimer = 90;
+  countdownTimer = 60;
   screen = "countdown";
 
   playSound(sounds.countdown);
