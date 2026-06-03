@@ -334,7 +334,7 @@ function spawnGroupie() {
     y: groundY - height + 8,
     width,
     height,
-    speed: fromLeft ? 1 : -1,
+    speed: fromLeft ? 2 : -2,
     facing: fromLeft ? 1 : -1,
     frame: 0,
     frameTimer: 0
